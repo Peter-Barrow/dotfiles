@@ -4,6 +4,7 @@
         ./tmux.nix
         ./starship.nix
         ./ghostty.nix
+        ./btm.nix
     ];
 
 }

@@ -1,6 +1,9 @@
-{ lib, pkgs, ...}: {
+{ lib, pkgs, inputs, ...}: {
+    # nixpkgs.overlays = [inputs.neovim-nightly-overlay.overlay];
+
     imports = [
         ./programs/cli/cli.nix
+        ./programs/editor/editor.nix
     ];
 
     # programs = {
@@ -11,6 +14,9 @@
             home-manager
             hello
             oh-my-zsh
+            luajitPackages.luarocks-nix
+            gcc
+            clang-tools
         ];
 
         username = "peterbarrow";
