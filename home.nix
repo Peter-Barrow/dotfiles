@@ -17,6 +17,9 @@
             luajitPackages.luarocks-nix
             gcc
             clang-tools
+            pyenv
+            direnv
+            tectonic
         ];
 
         username = "peterbarrow";

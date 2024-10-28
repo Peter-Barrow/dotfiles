@@ -5,6 +5,7 @@
         ./starship.nix
         ./ghostty.nix
         ./btm.nix
+#        ./tectonic.nix
     ];
 
 }
