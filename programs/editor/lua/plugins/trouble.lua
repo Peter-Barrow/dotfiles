@@ -9,7 +9,7 @@ return {
                 { silent = true, noremap = true }
             )
 
-            vim.keymap.set("n", "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
+            vim.keymap.set("n", "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0 win.position=left<cr>",
                 { silent = true, noremap = true }
             )
 
@@ -28,7 +28,6 @@ return {
             vim.keymap.set("n", "<leader>xQ", "<cmd>Trouble quickfix toggle<cr>",
                 { silent = true, noremap = true }
             )
-
         end
     },
 }
