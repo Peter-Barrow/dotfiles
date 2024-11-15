@@ -30,7 +30,8 @@ opt.writebackup = false
 opt.swapfile = false
 --
 -- use y and p with the system clipboard
-opt.clipboard = "unnamedplus"
+-- opt.clipboard = "unnamedplus"
+opt.clipboard:append("unnamedplus")
 
 vim.cmd.colorscheme('nano-theme')
 opt.background = "light" -- or "dark".

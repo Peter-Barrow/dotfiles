@@ -1,9 +1,10 @@
 { lib, pkgs, inputs, ...}: {
-    # nixpkgs.overlays = [inputs.neovim-nightly-overlay.overlay];
 
     imports = [
         ./programs/cli/cli.nix
         ./programs/editor/editor.nix
+        ./ui/gtk.nix
+        # ./programs/zotero.nix
     ];
 
     # programs = {
@@ -20,6 +21,19 @@
             pyenv
             direnv
             tectonic
+            zotero
+
+            # emacs
+            # fd
+            # imagemagick
+            # zstd
+            # gnutls
+            # sqlite
+        ];
+
+        sessionPath = [
+            "$HOME/.local/bin"
+            "$XDG_CONFIG_HOME/emacs/bin"
         ];
 
         username = "peterbarrow";

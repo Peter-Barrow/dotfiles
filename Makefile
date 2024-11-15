@@ -5,3 +5,7 @@ update:
 .PHONY: clean
 clean:
 	nix-collect-garbage -d
+
+PHONY: doomsync
+doomsync:
+	~/.emacs.d/bin/doom sync
