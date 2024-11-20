@@ -3,7 +3,7 @@ return {
 
     config = function()
         require('matlab').setup({
-            matlab_dir = "~/Applications/MATLAB/bin/matlab"
+            matlab_dir = "~/Applications/MATLAB-2024b/bin/matlab"
         })
 
         -- Keymaps

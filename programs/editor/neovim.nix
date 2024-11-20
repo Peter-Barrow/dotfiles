@@ -12,6 +12,7 @@ let
 in {
     programs.neovim = {
       enable = true;
+      defaultEditor = true;
       package = pkgs.neovim;
       vimAlias = true;
       vimdiffAlias = true;
@@ -22,6 +23,7 @@ in {
         # LazyVim
         conform-nvim
         # nvim-lint
+        fugitive
 
         render-markdown-nvim
     
@@ -71,17 +73,29 @@ in {
         # # nvim-code-action-menu # code action menu
         # neodev-nvim
         # SchemaStore-nvim # load known formats for json and yaml
+        # (fromGitHub 
+        #     "fc38521ea4d9ec8dbd4c2819ba8126cea743943b"
+        #     "master"
+        #     "ray-x/lsp_signature.nvim"
+        # )
     
         # # cmp plugins
         nvim-cmp # completion plugin
         cmp-buffer # buffer completions
         cmp-path # path completions
         cmp_luasnip # snipper completions
+        cmp-cmdline
         cmp-nvim-lsp # LSP completions
+        (fromGitHub
+            "031e6ba70b0ad5eee49fd2120ff7a2e325b17fa7"
+            "main"
+            "hrsh7th/cmp-nvim-lsp-signature-help"
+        )
     
         # # snippets
         luasnip # snippet engine
-        # friendly-snippets # a bunch of snippets to use
+        friendly-snippets # a bunch of snippets to use
+        vim-snippets
     
         # search functionality
         plenary-nvim
@@ -124,6 +138,7 @@ in {
         lazy-nvim
         # vim-startuptime
         (fromGitHub "93958a83706dc010fef7e237c50602eda8a9e68b" "main" "ronisbr/nano-theme.nvim")
+        (fromGitHub "d78c6df3aa8fe5e9af949149dc48184fbc945c04" "main" "MIBismuth/matlab.nvim")
       ];
     
       extraPackages = with pkgs; [

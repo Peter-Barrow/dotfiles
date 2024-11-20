@@ -254,22 +254,31 @@ END:")))
   (add-hook 'after-init-hook 'org-roam-mode)
   )
 
- ;; Let's set up some org-roam capture templates
- (setq org-roam-capture-templates
-       (quote (("d" "default" plain (function org-roam--capture-get-point)
-                "%?"
-                :file-name "%<%Y-%m-%d-%H%M%S>-${slug}"
-                :head "#+title: ${title}\n"
-                :unnarrowed t)
-               )))
+;; Let's set up some org-roam capture templates
+(setq org-roam-capture-templates
+      (quote (("d" "default" plain (function org-roam--capture-get-point)
+               "%?"
+               :file-name "%<%Y-%m-%d-%H%M%S>-${slug}"
+               :head "#+title: ${title}\n"
+               :unnarrowed t)
+              )))
 
- ;; And now we set necessary variables for org-roam-dailies
- (setq org-roam-dailies-capture-templates
-       '(("d" "default" entry
-          #'org-roam-capture--get-point
-          "* %?"
-          :file-name "daily/%<%Y-%m-%d>"
-          :head "#+title: %<%Y-%m-%d>\n\n")))
+;; And now we set necessary variables for org-roam-dailies
+;;(setq org-roam-dailies-capture-templates
+;;      '(("d" "default" entry
+;;         #'org-roam-capture--get-point
+;;         "* %?"
+;;         :file-name "daily/%<%Y-%m-%d>"
+;;         :head "#+title: %<%Y-%m-%d>\n\n")))
+
+(setq org-roam-capture-templates
+    '(
+      ("d" "default" plain "%?"
+       :target (file+head "%<%Y-%m-%d-%H%M%S>-${slug}.org"
+                          "#+title: ${title}\n")
+       :unnarrowed t)
+    )
+)
 
 (use-package! org-roam-ui
   :after org-roam
