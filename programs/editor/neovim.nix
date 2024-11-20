@@ -73,11 +73,11 @@ in {
         # # nvim-code-action-menu # code action menu
         # neodev-nvim
         # SchemaStore-nvim # load known formats for json and yaml
-        # (fromGitHub 
-        #     "fc38521ea4d9ec8dbd4c2819ba8126cea743943b"
-        #     "master"
-        #     "ray-x/lsp_signature.nvim"
-        # )
+        (fromGitHub 
+            "fc38521ea4d9ec8dbd4c2819ba8126cea743943b"
+            "master"
+            "ray-x/lsp_signature.nvim"
+        )
     
         # # cmp plugins
         nvim-cmp # completion plugin

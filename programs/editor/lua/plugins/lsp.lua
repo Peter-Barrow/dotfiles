@@ -12,7 +12,7 @@ return {
         "L3MON4D3/LuaSnip",
         "saadparwaiz1/cmp_luasnip",
         'hrsh7th/cmp-nvim-lsp-signature-help',
-        -- 'ray-x/lsp_signature.nvim',
+        'ray-x/lsp_signature.nvim',
     },
 
     config = function()
@@ -43,7 +43,17 @@ return {
                 vim.keymap.set("n", "<leader>f", "<cmd>lua vim.lsp.buf.formatting()<cr>", opts)
                 vim.keymap.set("n", '<leader>cf', "<cmd>lua vim.lsp.buf.format()<cr>", opts)
 
-                -- require('lsp_signature').on_attach({}, event.buf)
+                require('lsp_signature').on_attach({
+                    bind = true,
+                    hint_prefix = {
+                        above = "↙ ", -- when the hint is on the line above the current line
+                        current = "← ", -- when the hint is on the same line
+                        below = "↖ " -- when the hint is on the line below the current line
+                    },
+                    handler_opts = {
+                        border = "rounded",
+                    },
+                }, event.buf)
             end
 
         })
@@ -98,9 +108,9 @@ return {
             sources = {
                 { name = 'path' },
                 { name = 'nvim_lsp' },
-                { name = 'nvim_lsp_signature_help' },
-                { name = 'buffer',                 keyword_length = 3 },
-                { name = 'luasnip',                keyword_length = 2 },
+                -- { name = 'nvim_lsp_signature_help' },
+                { name = 'buffer',  keyword_length = 3 },
+                { name = 'luasnip', keyword_length = 2 },
             },
             mapping = {
                 ['<CR>'] = cmp.mapping.confirm({ select = false }),
