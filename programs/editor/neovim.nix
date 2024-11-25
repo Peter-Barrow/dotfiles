@@ -33,7 +33,7 @@ in {
         # # UI
         # bufferline-nvim
         # gitsigns-nvim
-        # edgy-nvim
+        edgy-nvim
         alpha-nvim
         toggleterm-nvim
         trouble-nvim
@@ -120,6 +120,8 @@ in {
             "main"
             "MIBismuth/matlab.nvim"
         )
+
+        avante-nvim
     
         # # leap
         # vim-repeat
@@ -180,7 +182,7 @@ in {
         nil
         nixpkgs-fmt
         texlab
-        zls
+        # zls
         
       ];
     

@@ -34,6 +34,8 @@
         sessionPath = [
             "$HOME/.local/bin"
             "$XDG_CONFIG_HOME/emacs/bin"
+            "$HOME/.zvm/"
+            "$HOME/.zvm/bin"
         ];
 
         username = "peterbarrow";

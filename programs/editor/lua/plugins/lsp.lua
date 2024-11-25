@@ -205,6 +205,7 @@ return {
 
         lspconfig.zls.setup({
             root_dir = lspconfig.util.root_pattern(".git", "build.zig", "zls.json"),
+            cmd = { '/home/peterbarrow/.zvm/bin/zls' },
             settings = {
                 zls = {
                     enable_inlay_hints = true,
