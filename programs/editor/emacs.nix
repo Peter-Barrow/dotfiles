@@ -60,10 +60,10 @@
             ];
             # environment.variables.PATH = [ "$XDG_CONFIG_HOME/emacs/bin" ];
 
-            home.file = {
-                ".config/doom/config.el".source = ./doom/config.el;
-                ".config/doom/init.el".source = ./doom/init.el;
-                ".config/doom/packages.el".source = ./doom/packages.el;
-            };
+            # home.file = {
+            #     ".config/doom/config.el".source = ./doom/config.el;
+            #     ".config/doom/init.el".source = ./doom/init.el;
+            #     ".config/doom/packages.el".source = ./doom/packages.el;
+            # };
     };
 }

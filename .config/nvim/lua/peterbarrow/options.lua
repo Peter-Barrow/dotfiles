@@ -1,7 +1,7 @@
 local opt = vim.opt
 
 opt.ma = true
-opt.mouse = 'a'
+opt.mouse = "a"
 opt.cursorline = true
 
 opt.tabstop = 4
@@ -19,7 +19,7 @@ opt.linebreak = true
 
 opt.ignorecase = true
 opt.smartcase = true
-vim.cmd [[":set nofoldenable"]]
+vim.cmd([[":set nofoldenable"]])
 
 opt.autoread = true
 opt.nu = true
@@ -33,5 +33,9 @@ opt.swapfile = false
 -- opt.clipboard = "unnamedplus"
 opt.clipboard:append("unnamedplus")
 
-vim.cmd.colorscheme('nano-theme')
-opt.background = "light" -- or "dark".
+-- vim.cmd.colorscheme("nano-theme")
+-- vim.cmd.colorscheme("rose-pine")
+-- opt.background = "light" -- or "dark".
+
+-- vim.treesitter.language.register('markdown', 'Avante')
+-- vim.cmd [[":TSToggle highlight"]]
