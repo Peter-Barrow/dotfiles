@@ -3,7 +3,6 @@
         ./zsh.nix
         ./tmux.nix
         ./starship.nix
-        ./ghostty.nix
         ./btm.nix
 #        ./tectonic.nix
     ];
