@@ -39,3 +39,6 @@ opt.clipboard:append("unnamedplus")
 
 -- vim.treesitter.language.register('markdown', 'Avante')
 -- vim.cmd [[":TSToggle highlight"]]
+
+opt.laststatus = 3
+opt.showtabline = 0

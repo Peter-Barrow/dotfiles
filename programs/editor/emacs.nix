@@ -2,14 +2,14 @@
     with lib;
     # let cfg = config.modules.editors.emacs;
     let cfg = config.programs.emacs;
-        emacs = with pkgs; ( emacsPackagesFor
-            emacs-pgtk
-            ).emacsWithPackages (epkgs: with epkgs; [
-                treesit-grammars.with-all-grammars
-                vterm
-                mu4e
-                ]
-            );
+      emacs = with pkgs; ( emacsPackagesFor
+          emacs-pgtk
+          ).emacsWithPackages (epkgs: with epkgs; [
+              treesit-grammars.with-all-grammars
+              vterm
+              mu4e
+              ]
+          );
     in {
         # options.modules.editors.emacs = {
         #     enable = mkBoolOpt false;

@@ -23,7 +23,7 @@
             tectonic
             zotero
 
-            # emacs
+            emacs
             # fd
             # imagemagick
             # zstd

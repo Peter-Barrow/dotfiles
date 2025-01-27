@@ -28,7 +28,7 @@
        ;; vertico           ; the search engine of the future
 
        :ui
-       deft              ; notational velocity for Emacs
+       ;; deft              ; notational velocity for Emacs
        doom              ; what makes DOOM look the way it does
        doom-dashboard    ; a nifty splash screen for Emacs
        doom-quit         ; DOOM quit-message prompts when you quit Emacs
@@ -81,7 +81,7 @@
 
        :checkers
        syntax              ; tasing you for every semicolon you forget
-       (spell +flyspell) ; tasing you for misspelling mispelling
+       (spell +flyspell) ; tasing you for misspelling misspelling
        ;;grammar           ; tasing grammar mistake every you make
 
        :tools
