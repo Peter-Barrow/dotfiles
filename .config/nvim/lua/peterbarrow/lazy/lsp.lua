@@ -15,10 +15,16 @@ return {
 		"ray-x/lsp_signature.nvim",
 	},
 
+	opts = {
+		inlay_hints = { enabled = true },
+	},
+
 	config = function()
 		-- local lsp = require('lsp-zero').preset({})
 		local lsp = require("lspconfig").util.default_config
-
+		vim.diagnostic.config({
+			virtual_text = true,
+		})
 		lsp.capabilities =
 			vim.tbl_deep_extend("force", lsp.capabilities, require("cmp_nvim_lsp").default_capabilities())
 
@@ -66,7 +72,6 @@ return {
 		--     },
 		-- })
 
-		-- lsp.set_server_config({
 		--     capabilities = {
 		--         textDocument = {
 		--             foldingRange = {

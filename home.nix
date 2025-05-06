@@ -22,6 +22,7 @@
             direnv
             tectonic
             zotero
+            poetry
 
             emacs
             # fd

@@ -1,7 +1,7 @@
 cursor-style = block
-font-family = Iosevka Term
+font-family = Iosevka Term Nerd Font
 font-size = 10
-shell-integration = none
+shell-integration = zsh
 
 # font-feature = ss01
 # font-feature = ss02
@@ -126,23 +126,44 @@ palette = 15=#282828
 # window-padding-y = 3
 window-padding-balance=true
 
-keybind = super+f=toggle_fullscreen
-keybind = ctrl+alt+z=toggle_split_zoom
+# keybind = super+f=toggle_fullscreen
+# keybind = ctrl+alt+z=toggle_split_zoom
+#
+# keybind = shift+alt+v=new_split:right
+# keybind = shift+alt+s=new_split:down
+#
+# #keybind = alt+shift+s=new_split:right
+#
+# keybind = shift+alt+k=resize_split:up,20
+# keybind = shift+alt+h=resize_split:left,20
+# keybind = shift+alt+k=resize_split:right,20
+# keybind = shift+alt+l=resize_split:down,20
+#
+# keybind = alt+h=goto_split:left
+# keybind = alt+j=goto_split:bottom
+# keybind = alt+k=goto_split:top
+# keybind = alt+l=goto_split:right
 
-keybind = shift+alt+v=new_split:right
-keybind = shift+alt+s=new_split:down
+keybind = ctrl+a>h=goto_split:left
+keybind = ctrl+a>j=goto_split:bottom
+keybind = ctrl+a>k=goto_split:top
+keybind = ctrl+a>l=goto_split:right
 
-#keybind = alt+shift+s=new_split:right
+keybind = ctrl+a>shift+h=resize_split:left,100
+keybind = ctrl+a>shift+j=resize_split:down,100
+keybind = ctrl+a>shift+k=resize_split:up,100
+keybind = ctrl+a>shift+l=resize_split:right,100
 
-keybind = shift+alt+k=resize_split:up,20
-keybind = shift+alt+h=resize_split:left,20
-keybind = shift+alt+k=resize_split:right,20
-keybind = shift+alt+l=resize_split:down,20
+keybind = ctrl+a>s=new_split:down
+keybind = ctrl+a>v=new_split:right
 
-keybind = alt+h=goto_split:left
-keybind = alt+j=goto_split:bottom
-keybind = alt+k=goto_split:top
-keybind = alt+l=goto_split:right
+keybind = ctrl+a>e=equalize_splits
+keybind = ctrl+a>z=toggle_split_zoom
 
-gtk-adwaita = true
-gtk-titlebar = false
+keybind = ctrl+a>t=new_tab
+keybind = ctrl+a>,=previous_tab
+keybind = ctrl+a>.=next_tab
+
+gtk-tabs-location = top
+gtk-titlebar = true
+gtk-titlebar-hide-when-maximized = true
