@@ -1,18 +1,11 @@
 return {
 	"neovim/nvim-lspconfig",
 	dependencies = {
-		"VonHeikemen/lsp-zero.nvim",
 		"williamboman/mason.nvim",
 		"williamboman/mason-lspconfig.nvim",
-		"hrsh7th/cmp-nvim-lsp",
-		"hrsh7th/cmp-buffer",
-		"hrsh7th/cmp-path",
-		"hrsh7th/cmp-cmdline",
-		"hrsh7th/nvim-cmp",
-		"L3MON4D3/LuaSnip",
-		"saadparwaiz1/cmp_luasnip",
-		"hrsh7th/cmp-nvim-lsp-signature-help",
-		"ray-x/lsp_signature.nvim",
+		"saghen/blink.cmp", -- Keep this for LSP capabilities
+		"L3MON4D3/LuaSnip", -- Add back for snippet support
+		"stevearc/conform.nvim", -- Ensure conform loads before LSP
 	},
 
 	opts = {
@@ -20,151 +13,21 @@ return {
 	},
 
 	config = function()
-		-- local lsp = require('lsp-zero').preset({})
-		local lsp = require("lspconfig").util.default_config
+		-- Setup LuaSnip
+		require("luasnip.loaders.from_vscode").lazy_load()
+
+		-- Configure LSP handlers with rounded borders
+		vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
+			border = "rounded",
+		})
+
+		vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
+			border = "rounded",
+		})
+
+		-- Setup diagnostics configuration
 		vim.diagnostic.config({
 			virtual_text = true,
-		})
-		lsp.capabilities =
-			vim.tbl_deep_extend("force", lsp.capabilities, require("cmp_nvim_lsp").default_capabilities())
-
-		vim.api.nvim_create_autocmd("LspAttach", {
-			desc = "LSP actions",
-			callback = function(event)
-				local opts = { buffer = event.buf }
-
-				vim.keymap.set("n", "gd", "<cmd>Telescope lsp_definitions<CR>", opts)
-				vim.keymap.set("n", "gsd", "<cmd>split | lua vim.lsp.buf.definition()<CR>", opts)
-				vim.keymap.set("n", "gvd", "<cmd>vsplit | lua vim.lsp.buf.definition()<CR>", opts)
-				vim.keymap.set("n", "gr", "<cmd>Telescope lsp_references<CR>", opts)
-				vim.keymap.set("n", "<leader>s", "<cmd>Telescope lsp_document_symbols<CR>", opts)
-				vim.keymap.set("n", "<leader>as", "<cmd>Telescope lsp_document_symbols<CR>", opts)
-				vim.keymap.set("n", "<leader>D", "<cmd>Telescope lsp_type_definitions<CR>", opts)
-				vim.keymap.set("n", "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
-				vim.keymap.set("n", "<leader>ca", "<cmd>Telescope lsp_code_actions<CR>", opts)
-				vim.keymap.set("n", "<leader>dl", "<cmd>Telescope diagnostics<cr>", opts)
-				vim.keymap.set("n", "<leader>f", "<cmd>lua vim.lsp.buf.formatting()<cr>", opts)
-				vim.keymap.set("n", "<leader>cf", "<cmd>lua vim.lsp.buf.format()<cr>", opts)
-
-				require("lsp_signature").on_attach({
-					bind = true,
-					hint_prefix = {
-						above = "↙ ", -- when the hint is on the line above the current line
-						current = "← ", -- when the hint is on the same line
-						below = "↖ ", -- when the hint is on the line below the current line
-					},
-					handler_opts = {
-						border = "rounded",
-					},
-				}, event.buf)
-			end,
-		})
-
-		-- FIX: get this working
-		-- local lsp_zero = require('lsp-zero')
-		-- lsp_zero.ui({
-		--     float_border = 'rounded',
-		--     sign_text = {
-		--         error = '✘',
-		--         warn = '▲',
-		--         hint = '⚑',
-		--         info = '»'
-		--     },
-		-- })
-
-		--     capabilities = {
-		--         textDocument = {
-		--             foldingRange = {
-		--                 dynamicRegistration = false,
-		--                 lineFoldingOnly = true
-		--             }
-		--         }
-		--     }
-		-- })
-		local cmp = require("cmp")
-		cmp.setup({
-			formatting = {
-				-- changing the order of fields so the icon is the first
-				fields = { "menu", "abbr", "kind" },
-
-				-- here is where the change happens
-				format = function(entry, item)
-					local menu_icon = {
-						nvim_lsp = "λ",
-						luasnip = "⋗",
-						buffer = "Ω",
-						path = "🖫",
-						nvim_lua = "Π",
-					}
-
-					item.menu = menu_icon[entry.source.name]
-					return item
-				end,
-			},
-			snippet = {
-				expand = function(args)
-					require("luasnip").lsp_expand(args.body)
-				end,
-			},
-			sources = {
-				{ name = "path" },
-				{ name = "nvim_lsp" },
-				-- { name = 'nvim_lsp_signature_help' },
-				{ name = "buffer", keyword_length = 3 },
-				{ name = "luasnip", keyword_length = 2 },
-			},
-			mapping = {
-				["<CR>"] = cmp.mapping.confirm({ select = false }),
-				["<C-Space>"] = cmp.mapping.complete(),
-				["<C-p>"] = cmp.mapping.select_prev_item(),
-				["<C-n>"] = cmp.mapping.select_next_item(),
-				["<C-d>"] = cmp.mapping.scroll_docs(-4),
-				["<C-u>"] = cmp.mapping.scroll_docs(4),
-			},
-		})
-
-		local cmp_lsp = require("cmp_nvim_lsp")
-		local capabilities = vim.tbl_deep_extend(
-			"force",
-			{},
-			vim.lsp.protocol.make_client_capabilities(),
-			cmp_lsp.default_capabilities()
-		)
-
-		local cmp_select = { behavior = cmp.SelectBehavior.Select }
-
-		require("mason").setup()
-		require("mason-lspconfig").setup({
-			function(server_name) -- default handler (optional)
-				require("lspconfig")[server_name].setup({
-					capabilities = capabilities,
-				})
-			end,
-		})
-
-		-- cmp.setup({
-		--     snippet = {
-		--         expand = function(args)
-		--             require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
-		--         end,
-		--     },
-		--     mapping = cmp.mapping.preset.insert({
-		--         ['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
-		--         ['<C-n>'] = cmp.mapping.select_next_item(cmp_select),
-		--         -- ['<C-y>'] = cmp.mapping.confirm({ select = true }),
-		--         ['<cr>'] = cmp.mapping.confirm({ select = true }),
-		--         ["<C-Space>"] = cmp.mapping.complete(),
-		--     }),
-		--     sources = cmp.config.sources({
-		--         { name = 'nvim_lsp' },
-		--         { name = 'luasnip' }, -- For luasnip users.
-		--     }, {
-		--         { name = 'buffer' },
-		--     })
-		-- })
-
-		vim.diagnostic.config({
-			-- update_in_insert = true,
 			float = {
 				focusable = false,
 				style = "minimal",
@@ -175,7 +38,79 @@ return {
 			},
 		})
 
+		-- Setup capabilities with blink.cmp integration
+		local capabilities = vim.lsp.protocol.make_client_capabilities()
+		capabilities = vim.tbl_deep_extend("force", capabilities, require("blink.cmp").get_lsp_capabilities())
+
+		-- Add folding capabilities
+		capabilities = vim.tbl_deep_extend("force", capabilities, {
+			textDocument = {
+				foldingRange = {
+					dynamicRegistration = false,
+					lineFoldingOnly = true,
+				},
+			},
+		})
+
+		-- LSP keymaps on attach
+		vim.api.nvim_create_autocmd("LspAttach", {
+			desc = "LSP actions",
+			callback = function(event)
+				local opts = { buffer = event.buf }
+
+				-- Navigation
+				vim.keymap.set("n", "gd", "<cmd>Telescope lsp_definitions<CR>", opts)
+				vim.keymap.set("n", "gsd", "<cmd>split | lua vim.lsp.buf.definition()<CR>", opts)
+				vim.keymap.set("n", "gvd", "<cmd>vsplit | lua vim.lsp.buf.definition()<CR>", opts)
+				vim.keymap.set("n", "gr", "<cmd>Telescope lsp_references<CR>", opts)
+				vim.keymap.set("n", "<leader>D", "<cmd>Telescope lsp_type_definitions<CR>", opts)
+
+				-- Symbols and diagnostics
+				vim.keymap.set("n", "<leader>s", "<cmd>Telescope lsp_document_symbols<CR>", opts)
+				vim.keymap.set("n", "<leader>as", "<cmd>Telescope lsp_document_symbols<CR>", opts)
+				vim.keymap.set("n", "<leader>dl", "<cmd>Telescope diagnostics<cr>", opts)
+
+				-- Code actions and refactoring
+				vim.keymap.set("n", "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
+				vim.keymap.set("n", "<leader>ca", "<cmd>Telescope lsp_code_actions<CR>", opts)
+
+				-- Formatting (manual only - conform handles auto-format)
+				vim.keymap.set("n", "<leader>f", function()
+					local ok, conform = pcall(require, "conform")
+					if ok then
+						conform.format({ async = false, lsp_fallback = true })
+					else
+						-- Fallback to LSP formatting if conform not available
+						vim.lsp.buf.format()
+					end
+				end, opts)
+				vim.keymap.set("n", "<leader>cf", function()
+					local ok, conform = pcall(require, "conform")
+					if ok then
+						conform.format({ async = false, lsp_fallback = true })
+					else
+						-- Fallback to LSP formatting if conform not available
+						vim.lsp.buf.format()
+					end
+				end, opts)
+			end,
+		})
+
+		-- Setup Mason
+		require("mason").setup()
+		require("mason-lspconfig").setup({
+			handlers = {
+				function(server_name) -- default handler
+					require("lspconfig")[server_name].setup({
+						capabilities = capabilities,
+					})
+				end,
+			},
+		})
+
+		-- Individual LSP server configurations
 		local lspconfig = require("lspconfig")
+
 		lspconfig.lua_ls.setup({
 			capabilities = capabilities,
 			settings = {
@@ -188,9 +123,13 @@ return {
 			},
 		})
 
-		lspconfig.clangd.setup({})
+		lspconfig.clangd.setup({
+			capabilities = capabilities,
+		})
 
-		lspconfig.nil_ls.setup({})
+		lspconfig.nil_ls.setup({
+			capabilities = capabilities,
+		})
 
 		lspconfig.pylsp.setup({
 			capabilities = capabilities,
@@ -204,15 +143,19 @@ return {
 			},
 		})
 
-		lspconfig.ruff.setup({
-			init_options = {
-				settings = {},
-			},
+		-- lspconfig.ruff.setup({
+		-- 	capabilities = capabilities,
+		-- 	init_options = {
+		-- 		settings = {},
+		-- 	},
+		-- })
+
+		lspconfig.texlab.setup({
+			capabilities = capabilities,
 		})
 
-		lspconfig.texlab.setup({})
-
 		lspconfig.zls.setup({
+			capabilities = capabilities,
 			root_dir = lspconfig.util.root_pattern(".git", "build.zig", "zls.json"),
 			cmd = { "/home/peterbarrow/.zvm/bin/zls" },
 			settings = {
@@ -225,11 +168,11 @@ return {
 		})
 
 		lspconfig.matlab_ls.setup({
+			capabilities = capabilities,
 			cmd = { "node", "/home/peterbarrow/Git/MATLAB-language-server/out/index.js", "--stdio" },
 			single_file_support = true,
 			settings = {
 				MATLAB = {
-					capabilities = require("cmp_nvim_lsp").default_capabilities(),
 					indexWorkspace = true,
 					installPath = "/home/peterbarrow/Applications/MATLAB-2024b/",
 					telemetry = false,

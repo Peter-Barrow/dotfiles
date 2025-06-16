@@ -57,43 +57,46 @@ font-feature = dlig
 # palette = 7=#bfbfbf
 # palette = 15=#ffffff
 
-# N Λ N O
-background = #FFFFFF
-foreground = #37474F
-# palette =  0=#ECEFF4
-# palette =  1=#263238
-# palette =  2=#66BB6A
-# palette =  3=#E2C12F
-# palette =  4=#42A5F5
-# palette =  5=#AB47BC
-# palette =  6=#FAFAFA
-# palette =  7=#2E3440
-# palette =  8=#FF6F00
-# palette =  9=#263238
-# palette = 10=#66BB6A
-# palette = 11=#E2C12F
-# palette = 12=#42A5F5
-# palette = 13=#AB47BC
-# palette = 14=#25C6DA
-# palette = 15=#2E3440
+# # N Λ N O
+# background = #FFFFFF
+# foreground = #37474F
+# # palette =  0=#ECEFF4
+# # palette =  1=#263238
+# # palette =  2=#66BB6A
+# # palette =  3=#E2C12F
+# # palette =  4=#42A5F5
+# # palette =  5=#AB47BC
+# # palette =  6=#FAFAFA
+# # palette =  7=#2E3440
+# # palette =  8=#FF6F00
+# # palette =  9=#263238
+# # palette = 10=#66BB6A
+# # palette = 11=#E2C12F
+# # palette = 12=#42A5F5
+# # palette = 13=#AB47BC
+# # palette = 14=#25C6DA
+# # palette = 15=#2E3440
+#
+# palette =  0=#FFFFFF
+# palette =  1=#FF6F00
+# palette =  2=#C1C1C1
+# palette =  3=#FFAB91
+# palette =  4=#848484
+# palette =  5=#673AB7
+# palette =  6=#474747
+# palette =  7=#282828
+# palette =  8=#FFFFFF
+# palette =  9=#FF6F00
+# palette = 10=#C1C1C1
+# palette = 11=#FFAB91
+# palette = 12=#848484
+# palette = 13=#673AB7
+# palette = 14=#474747
+# palette = 15=#282828
 
-palette =  0=#FFFFFF
-palette =  1=#FF6F00
-palette =  2=#C1C1C1
-palette =  3=#FFAB91
-palette =  4=#848484
-palette =  5=#673AB7
-palette =  6=#474747
-palette =  7=#282828
-palette =  8=#FFFFFF
-palette =  9=#FF6F00
-palette = 10=#C1C1C1
-palette = 11=#FFAB91
-palette = 12=#848484
-palette = 13=#673AB7
-palette = 14=#474747
-palette = 15=#282828
+theme = dark:kanso-zen,light:kanso-pearl
 
+unfocused-split-opacity = 0.75
 
 # # black
 # palette = 0=#393552
@@ -126,7 +129,7 @@ palette = 15=#282828
 # window-padding-y = 3
 window-padding-balance=true
 
-# keybind = super+f=toggle_fullscreen
+keybind = super+f=toggle_fullscreen
 # keybind = ctrl+alt+z=toggle_split_zoom
 #
 # keybind = shift+alt+v=new_split:right
@@ -155,7 +158,9 @@ keybind = ctrl+a>shift+k=resize_split:up,100
 keybind = ctrl+a>shift+l=resize_split:right,100
 
 keybind = ctrl+a>s=new_split:down
+keybind = ctrl+a>shift+s=new_split:up
 keybind = ctrl+a>v=new_split:right
+keybind = ctrl+a>x=new_split:left
 
 keybind = ctrl+a>e=equalize_splits
 keybind = ctrl+a>z=toggle_split_zoom

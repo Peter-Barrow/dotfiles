@@ -1,13 +1,24 @@
 { config, pkgs, lib, ... }:
     with lib;
     # let cfg = config.modules.editors.emacs;
+    # let cfg = config.programs.emacs;
+    #   emacs = with pkgs; ( emacsPackagesFor
+    #       emacs-pgtk
+    #       ).emacsWithPackages (epkgs: with epkgs; [
+    #           treesit-grammars.with-all-grammars
+    #           vterm
+    #           mu4e
+    #           ]
+    #       );
     let cfg = config.programs.emacs;
       emacs = with pkgs; ( emacsPackagesFor
-          emacs-pgtk
+          emacs-git-pgtk
           ).emacsWithPackages (epkgs: with epkgs; [
               treesit-grammars.with-all-grammars
               vterm
               mu4e
+              pdf-tools
+              melpaStablePackages.pdf-tools
               ]
           );
     in {
@@ -18,6 +29,7 @@
         config = {
 
             home.packages = with pkgs; [
+
                 # (mkLauncherEntry "Emacs (Debug Mode)" {
                 #   description = "Start Emacs in debug mode";
                 #   icon = "emacs";
@@ -39,6 +51,7 @@
                 # (mkIf (config.programs.gnupg.agent.enable)
                 #   pinentry-emacs)   # in-emacs gnupg prompts
                 zstd                # for undo-fu-session/undo-tree compression
+
 
                 ## Module dependencies
                 # :email mu4e

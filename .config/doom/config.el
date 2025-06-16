@@ -58,12 +58,101 @@
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
-(setq display-line-numbers-type t)
+;; (setq display-line-numbers-type t)
+
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
+(add-hook 'org-mode-hook 'display-line-numbers-mode)
+(dolist (mode '(pdf-view-mode-hook
+                term-mode-hook
+                eshell-mode-hook
+                vterm-mode-hook
+                imenu-list-minor-mode-hook
+                imenu-list-major-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode -1))))
+(setq-default display-line-numbers-type 'relative)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/Documents/org")
 
+(after! org
+  (dolist (pkg '("amsmath" "amssymb" "mathtools" "mathrsfs" "tikz" "pgfplots"))
+    (add-to-list 'org-latex-packages-alist `("" ,pkg t))))
+
+(use-package! org-latex-preview
+  :after org
+  :config
+  (plist-put org-latex-preview-appearance-options
+             :page-width 0.8)
+  (add-hook 'org-mode-hook 'org-latex-preview-auto-mode)
+  (setq org-latex-preview-auto-ignored-commands
+        '(next-line previous-line mwheel-scroll ultra-scroll
+          scroll-up-command scroll-down-command
+          evil-scroll-up evil-scroll-down evil-scroll-line-up evil-scroll-line-down)
+        org-latex-preview-numbered t
+        org-latex-preview-live t
+        org-latex-preview-live-debounce 0.25)
+
+  ;; code for centering LaTeX previews -- a terrible idea
+  (defun my/org-latex-preview-uncenter (ov)
+    (overlay-put ov 'before-string nil))
+  (defun my/org-latex-preview-recenter (ov)
+    (overlay-put ov 'before-string (overlay-get ov 'justify)))
+  (defun my/org-latex-preview-center (ov)
+    (save-excursion
+      (goto-char (overlay-start ov))
+      (when-let* ((elem (org-element-context))
+                  ((or (eq (org-element-type elem) 'latex-environment)
+                       (string-match-p "^\\\\\\[" (org-element-property :value elem))))
+                  (img (overlay-get ov 'display))
+                  (prop `(space :align-to (- center (0.55 . ,img))))
+                  (justify (propertize " " 'display prop 'face 'default)))
+        (overlay-put ov 'justify justify)
+        (overlay-put ov 'before-string (overlay-get ov 'justify)))))
+  (define-minor-mode org-latex-preview-center-mode
+    "Center equations previewed with `org-latex-preview'."
+    :global nil
+    (if org-latex-preview-center-mode
+        (progn
+          (add-hook 'org-latex-preview-overlay-open-functions
+                    #'my/org-latex-preview-uncenter nil :local)
+          (add-hook 'org-latex-preview-overlay-close-functions
+                    #'my/org-latex-preview-recenter nil :local)
+          (add-hook 'org-latex-preview-overlay-update-functions
+                    #'my/org-latex-preview-center nil :local))
+      (remove-hook 'org-latex-preview-overlay-close-functions
+                   #'my/org-latex-preview-recenter)
+      (remove-hook 'org-latex-preview-overlay-update-functions
+                   #'my/org-latex-preview-center)
+      (remove-hook 'org-latex-preview-overlay-open-functions
+                   #'my/org-latex-preview-uncenter))))
+
+(add-hook 'org-src-mode-hook
+          (lambda ()
+            (when (string= major-mode "latex-mode")
+              (evil-tex-mode 1))))
+
+;; (after! org-download
+;;   (setq org-download-method 'directory
+;;         org-download-image-dir "~/Documents/org/roam/images/"
+;;         org-download-link-format (format "[[file:%s/%%s]]" org-download-image-dir)
+;;         org-download-heading-lvl nil))
+
+(after! org-download
+      (setq org-download-method 'directory)
+      (setq org-download-image-dir (concat (file-name-sans-extension (buffer-file-name)) "-img"))
+      (setq org-download-image-org-width 600)
+      (setq org-download-link-format "[[file:%s]]\n"
+        org-download-abbreviate-filename-function #'file-relative-name)
+      (setq org-download-link-format-function #'org-download-link-format-function-default))
+
+(map! :map org-mode-map
+      :localleader
+      :prefix "a"
+      :desc "Rename image at point"
+      "C" #'org-download-rename-at-point)
+
+;; (add-hook 'org-mode-hook 'olivetti-mode)
 
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
 ;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
@@ -297,11 +386,8 @@ END:")))
 
 ;; use-package! org-super-agenda
 ;;  :hook (org-agenda-mode . org-super-agenda-mode))
+(setq org-agenda-files (append '("~/Documents/org/roam" "~/.emacs.d") ))
 
-(use-package! org-modern
-  :after org
-  :config
-  (with-eval-after-load 'org (global-org-modern-mode)))
 
 (setq ring-bell-function 'ignore ; no bell
       ;; better scrolling
@@ -410,49 +496,6 @@ END:")))
   (setq mixed-pitch-set-height t)
   (set-face-attribute 'variable-pitch nil :height 1.2))
 
-(after! org
-  (setq
-   ;; Choose some fonts
-   ;(set-face-attribute 'default nil :family "Iosevka")
-   ;(set-face-attribute 'variable-pitch nil :family "Iosevka Aile")
-   ;(set-face-attribute 'org-modern-symbol nil :family "Iosevka")
-
-   ; ;; Add frame borders and window dividers
-   ; (modify-all-frames-parameters
-   ;  '((right-divider-width . 40)
-   ;    (internal-border-width . 40)))
-   ; (dolist (face '(window-divider
-   ;                 window-divider-first-pixel
-   ;                 window-divider-last-pixel))
-   ;   (face-spec-reset-face face)
-   ;   (set-face-foreground face (face-attribute 'default :background)))
-   ; (set-face-background 'fringe (face-attribute 'default :background))
-   ;; Edit settings
-   org-auto-align-tags nil
-   org-indent-mode 0
-   org-adapt-indentation nil
-   org-tags-column 0
-   org-catch-invisible-edits 'show-and-error
-   org-special-ctrl-a/e t
-   org-insert-heading-respect-content t
-
-   ;; Org styling, hide markup etc.
-   org-hide-emphasis-markers t
-   org-pretty-entities t
-   org-ellipsis "…"
-
-   ;; Agenda styling
-   org-agenda-tags-column 0
-   org-agenda-block-separator ?─
-   org-agenda-time-grid
-   '((daily today require-timed)
-     (800 1000 1200 1400 1600 1800 2000)
-     " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
-   org-agenda-current-time-string
-   "⭠ now ─────────────────────────────────────────────────")
-
-  (global-org-modern-mode)
-  )
 
 (setq display-line-numbers-type 'relative)
 (global-display-line-numbers-mode)
@@ -461,3 +504,138 @@ END:")))
 (setq doom-theme 'doom-nano-light)
 
 ; (load-theme 'rose-pine-moon t)
+
+(setq org-src-fontify-natively t
+      org-src-tab-acts-natively t
+      org-edit-src-content-indentation 0)
+
+;; (set-face-attribute 'org-block nil            :foreground nil :inherit
+;; 'fixed-pitch :height 0.85)
+;; (set-face-attribute 'org-code nil             :inherit '(shadow fixed-pitch) :height 0.85)
+;; (set-face-attribute 'org-indent nil           :inherit '(org-hide fixed-pitch) :height 0.85)
+;; (set-face-attribute 'org-verbatim nil         :inherit '(shadow fixed-pitch) :height 0.85)
+;; (set-face-attribute 'org-special-keyword nil  :inherit '(font-lock-comment-face
+;; fixed-pitch))
+;; (set-face-attribute 'org-meta-line nil        :inherit '(font-lock-comment-face fixed-pitch))
+;; (set-face-attribute 'org-checkbox nil         :inherit 'fixed-pitch)
+
+
+;; ;; Minimal UI
+;; (package-initialize)
+;; (menu-bar-mode -1)
+;; (tool-bar-mode -1)
+;; (scroll-bar-mode -1)
+;; (modus-themes-load-operandi)
+;;
+;; ;; Choose some fonts
+;; ;; (set-face-attribute 'default nil :family "Iosevka")
+;; ;; (set-face-attribute 'variable-pitch nil :family "Iosevka Aile")
+;; ;; (set-face-attribute 'org-modern-symbol nil :family "Iosevka")
+;;
+;; ;; Add frame borders and window dividers
+;; (modify-all-frames-parameters
+;;  '((right-divider-width . 40)
+;;    (internal-border-width . 40)))
+;; (dolist (face '(window-divider
+;;                 window-divider-first-pixel
+;;                 window-divider-last-pixel))
+;;   (face-spec-reset-face face)
+;;   (set-face-foreground face (face-attribute 'default :background)))
+;; (set-face-background 'fringe (face-attribute 'default :background))
+;;
+;; (setq
+;;  ;; Edit settings
+;;  org-auto-align-tags nil
+;;  org-tags-column 0
+;;  org-fold-catch-invisible-edits 'show-and-error
+;;  org-special-ctrl-a/e t
+;;  org-insert-heading-respect-content t
+;;
+;;  ;; Org styling, hide markup etc.
+;;  org-hide-emphasis-markers t
+;;  org-pretty-entities t
+;;  org-agenda-tags-column 0
+;;  org-ellipsis "…")
+;;
+;; (global-org-modern-mode)
+
+;; (use-package org-modern
+;;   :ensure t
+;;   :custom
+;;   (org-modern-hide-stars nil)		; adds extra indentation
+;;   (org-modern-table nil)
+;;   (org-modern-list
+;;    '(;; (?- . "-")
+;;      (?* . "•")
+;;      (?+ . "‣")))
+;;   :hook
+;;   (org-mode . org-modern-mode)
+;;   (org-agenda-finalize . org-modern-agenda))
+;;
+;; (set-face-attribute 'fixed-pitch nil :family "Iosevka" :height 1.0) ; or whatever font family
+;;
+;; (use-package org-modern-indent
+;;   :load-path "~/Git/org-modern-indent/"
+;;   ; or
+;;   ; :straight (org-modern-indent :type git :host github :repo "jdtsmith/org-modern-indent"))
+;;   :config ; add late to hook
+;;   (add-hook 'org-mode-hook #'org-modern-indent-mode 90))
+;;
+;; (use-package! org-modern
+;;    :hook org-mode
+;;    :ensure t
+;;    :custom
+;;   ;; Minimal UI
+;;   ;; (package-initialize)
+;;   ;; (menu-bar-mode -1)
+;;   ;; (tool-bar-mode -1)
+;;   ;; (scroll-bar-mode -1)
+;;   ;; (modus-themes-load-operandi)
+;;
+;;   ;; Choose some fonts
+;;   ;; (set-face-attribute 'default nil :family "Iosevka")
+;;   ;; (set-face-attribute 'variable-pitch nil :family "Iosevka Aile")
+;;   ;; (set-face-attribute 'org-modern-symbol nil :family "Iosevka")
+;;
+;;   ;; Add frame borders and window dividers
+;;   ;; (modify-all-frames-parameters
+;;   ;;  '((right-divider-width . 40)
+;;   ;;    (internal-border-width . 40)))
+;;   (dolist (face '(window-divider
+;;                   window-divider-first-pixel
+;;                   window-divider-last-pixel))
+;;     (face-spec-reset-face face)
+;;     (set-face-foreground face (face-attribute 'default :background)))
+;;   (set-face-background 'fringe (face-attribute 'default :background))
+;;
+;;   (setq
+;;    ;; Edit settings
+;;    org-auto-align-tags nil
+;;    org-tags-column 0
+;;    org-catch-invisible-edits 'show-and-error
+;;    org-special-ctrl-a/e t
+;;    org-insert-heading-respect-content t
+;;
+;;    ;; Org styling, hide markup etc.
+;;    org-hide-emphasis-markers t
+;;    org-pretty-entities t
+;;    org-agenda-tags-column 0
+;;    org-ellipsis "…")
+;;
+;;   (global-org-modern-mode))
+
+(setq org-modern-label-border nil)
+(global-org-modern-mode)
+(setq
+ ;; Edit settings
+ org-auto-align-tags nil
+ org-tags-column 0
+ org-catch-invisible-edits 'show-and-error
+ org-special-ctrl-a/e t
+ org-insert-heading-respect-content t
+
+ ;; Org styling, hide markup etc.
+ org-hide-emphasis-markers t
+ org-pretty-entities t
+ org-agenda-tags-column 0
+ org-ellipsis "…")

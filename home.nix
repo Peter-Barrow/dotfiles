@@ -16,15 +16,15 @@
             hello
             oh-my-zsh
             luajitPackages.luarocks-nix
-            gcc
-            clang-tools
+            # gcc
+            # clang-tools
             pyenv
             direnv
             tectonic
             zotero
             poetry
 
-            emacs
+            # emacs
             # fd
             # imagemagick
             # zstd

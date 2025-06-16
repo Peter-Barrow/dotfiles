@@ -53,13 +53,40 @@
 (package! helm-bibtex)
 (package! evil-escape)
 (package! evil-surround)
+;; ORG MODE
+(unpin! org)
+
+(package! org :recipe
+  (:host nil :repo "https://git.tecosaur.net/mirrors/org-mode.git" :remote "mirror" :fork
+   (:host nil :repo "https://git.tecosaur.net/tec/org-mode.git" :branch "dev" :remote "tecosaur")
+   :files
+   (:defaults "etc")
+   :build t :pre-build
+   (with-temp-file "org-version.el"
+     (require 'lisp-mnt)
+     (let
+         ((version
+           (with-temp-buffer
+             (insert-file-contents "lisp/org.el")
+             (lm-header "version")))
+          (git-version
+           (string-trim
+            (with-temp-buffer
+              (call-process "git" nil t nil "rev-parse" "--short" "HEAD")
+              (buffer-string)))))
+       (insert
+        (format "(defun org-release () \"The release version of Org.\" %S)\n" version)
+        (format "(defun org-git-version () \"The truncate git commit hash of Org mode.\" %S)\n" git-version)
+        "(provide 'org-version)\n"))))
+  :pin nil)
+
 (package! org-roam-ui)
 (package! org-roam-bibtex
     :recipe (:host github
              :repo "org-roam/org-roam-bibtex"))
-;; (package! org-pdftools)
+(package! org-pdftools)
 (package! org-ref)
-
+;; (package! pdf-tools :built-in 'prefer)
 (package! doom-nano-modeline
   :recipe (:host github
   :repo "ronisbr/doom-nano-modeline"))
@@ -67,3 +94,6 @@
 (package! mixed-pitch)
 
 (package! org-modern)
+;; (package! olivetti)
+
+(package! vulpea)
